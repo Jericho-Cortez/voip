@@ -51,6 +51,27 @@ Un centre d’appels gère les appels entrants et sortants avec la VoIP, permett
 ### CRM Multi-Service
 Utilisation dans des entreprises ayant différents services : technique, client, commercial, etc.
 
+## Réponses aux questions du document
+
+### Différences entre la configuration VoIP d'un call center et celle d'un standard téléphonique d'entreprise
+- Un standard téléphonique d'entreprise fonctionne avec des horaires fixes et une simple gestion des appels.
+- Un call center utilise des files d'attente, une priorisation des appels selon les services et une historisation complète des communications.
+
+### Coût des appels VoIP et coûts opérationnels
+- Le coût des appels VoIP est généralement inférieur à celui des appels traditionnels.
+- Les coûts opérationnels et de maintenance peuvent varier selon la criticité du service et le niveau de support requis (ex : support 24/7 vs. standard).
+
+### Exemples d'entreprises utilisant des services VoIP
+- **Darty**
+- **La Fnac**
+- **France Travail**
+- **La Poste (service bancaire, livraison, courrier)**
+
+### Architecture possible d'un système VoIP
+1. **Authentification** : Identification des utilisateurs.
+2. **Localisation** : Détection de la région et affectation des appels.
+3. **Orientation par service** : Redirection des appels vers les services appropriés.
+
 ## Sécurité et Chiffrement
 
 Les protocoles recommandés pour sécuriser la VoIP :
@@ -88,64 +109,6 @@ sudo make samples
 sudo make config
 ```
 
-### 📌 3. Configuration de PJSIP
-
-#### Modification du fichier `pjsip.conf`
-```sh
-sudo nano /etc/asterisk/pjsip.conf
-```
-
-**Exemple de configuration :**
-```ini
-[transport-udp]
-type=transport
-protocol=udp
-bind=0.0.0.0:5060
-
-[transport-tls]
-type=transport
-protocol=tls
-bind=0.0.0.0:5061
-cert_file=/etc/asterisk/keys/certificate.pem
-priv_key_file=/etc/asterisk/keys/private.key
-method=tlsv1_2
-```
-
-#### 📌 Génération des certificats TLS
-```sh
-cd /etc/asterisk/keys
-openssl req -x509 -newkey rsa:2048 -keyout private.key -out certificate.pem -days 365 -nodes
-```
-
-### 📌 4. Configuration des extensions
-
-#### Modification du fichier `extensions.conf`
-```sh
-sudo nano /etc/asterisk/extensions.conf
-```
-
-**Ajout des règles d’appel :**
-```ini
-[from-internal]
-exten => 6001,1,Dial(PJSIP/alice,10)
-same => n,VoiceMail(6001)
-same => n,Hangup()
-```
-
-### 📌 5. Configuration de la messagerie vocale
-
-#### Modification du fichier `voicemail.conf`
-```sh
-sudo nano /etc/asterisk/voicemail.conf
-```
-
-### 📌 6. Installation de GoogleTTS
-```sh
-wget -O GoogleTTS.tar.gz http://github.com/zaf/asterisk-googletts/tarball/master --no-check-certificate
-tar -xvf GoogleTTS.tar.gz
-cp googletts.agi /var/lib/asterisk/agi-bin/
-```
-
 ### 📌 7. Redémarrage d'Asterisk
 ```sh
 sudo systemctl restart asterisk.service
@@ -158,6 +121,5 @@ sudo systemctl restart asterisk.service
 La VoIP est une solution moderne et efficace pour les communications vocales. Malgré sa dépendance à la connexion Internet, ses avantages en termes de coûts et de flexibilité en font un choix optimal pour de nombreuses organisations.
 
 ---
-
 
 
