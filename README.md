@@ -69,9 +69,14 @@ Utilisation recommandée de VPN comme **ProtonVPN**, **TunnelBear** ou **Windscr
 ## Installation d'Asterisk
 
 ### 📌 1. Installation des dépendances
+```sh
 sudo apt install build-essential wget libncurses5-dev libssl-dev libxml2-dev libsqlite3-dev uuid-dev perl libwww-perl sox mpg123
+```
 
-###📌 2. Installation et configuration d'Asterisk
+### 📌 2. Installation et configuration d'Asterisk
+
+#### Téléchargement et compilation
+```sh
 cd /usr/src
 sudo wget https://downloads.asterisk.org/pub/telephony/asterisk/asterisk-22-current.tar.gz
 sudo tar xvf asterisk-22-current.tar.gz
@@ -81,9 +86,17 @@ sudo make
 sudo make install
 sudo make samples
 sudo make config
+```
 
-###📌 3. Configuration de PJSIP
+### 📌 3. Configuration de PJSIP
+
+#### Modification du fichier `pjsip.conf`
+```sh
 sudo nano /etc/asterisk/pjsip.conf
+```
+
+**Exemple de configuration :**
+```ini
 [transport-udp]
 type=transport
 protocol=udp
@@ -96,48 +109,55 @@ bind=0.0.0.0:5061
 cert_file=/etc/asterisk/keys/certificate.pem
 priv_key_file=/etc/asterisk/keys/private.key
 method=tlsv1_2
+```
 
-[alice](endpoint_internal)
-auth=alice
-aors=alice
-[alice](auth_userpass)
-password=bonjour
-username=alice
-[alice](aor_dynamic)
-
+#### 📌 Génération des certificats TLS
+```sh
 cd /etc/asterisk/keys
 openssl req -x509 -newkey rsa:2048 -keyout private.key -out certificate.pem -days 365 -nodes
+```
 
-###📌 4. Configuration des extensions
+### 📌 4. Configuration des extensions
+
+#### Modification du fichier `extensions.conf`
+```sh
 sudo nano /etc/asterisk/extensions.conf
+```
 
+**Ajout des règles d’appel :**
+```ini
 [from-internal]
 exten => 6001,1,Dial(PJSIP/alice,10)
 same => n,VoiceMail(6001)
 same => n,Hangup()
+```
 
-exten => 6002,1,Dial(PJSIP/bob,10)
-same => n,VoiceMail(6002)
-same => n,Hangup()
+### 📌 5. Configuration de la messagerie vocale
 
-exten => 6004,1,Dial(PJSIP/julien,10)
-same => n,VoiceMail(6004)
-same => n,Hangup()
-
-###📌 5. Configuration de la messagerie vocale
+#### Modification du fichier `voicemail.conf`
+```sh
 sudo nano /etc/asterisk/voicemail.conf
-[default]
-6001 => 1234, alice
-6002 => 1234, bob
+```
 
-###📌 6. Installation de GoogleTTS
+### 📌 6. Installation de GoogleTTS
+```sh
 wget -O GoogleTTS.tar.gz http://github.com/zaf/asterisk-googletts/tarball/master --no-check-certificate
 tar -xvf GoogleTTS.tar.gz
-cd zaf-asterisk-googletts-5566ddc
 cp googletts.agi /var/lib/asterisk/agi-bin/
+```
 
-###📌 7. Redémarrage d'Asterisk
+### 📌 7. Redémarrage d'Asterisk
+```sh
 sudo systemctl restart asterisk.service
+```
+
+---
+
+## Conclusion
+
+La VoIP est une solution moderne et efficace pour les communications vocales. Malgré sa dépendance à la connexion Internet, ses avantages en termes de coûts et de flexibilité en font un choix optimal pour de nombreuses organisations.
+
+---
 
 
 
